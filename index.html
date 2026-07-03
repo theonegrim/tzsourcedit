@@ -137,3 +137,33 @@ renderProducts();
 
 </body>
 </html>
+<h2>Checkout</h2>
+<div id="paypal-button-container"></div>
+</body>
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=GBP"></script>
+<script>
+function getTotal() {
+  return cart.reduce((sum, item) => sum + item.price, 0);
+}
+
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        amount: {
+          value: getTotal().toFixed(2)
+        }
+      }]
+    });
+  },
+
+  onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+      alert("Payment successful! " + details.payer.name.given_name);
+
+      cart = [];
+      renderCart();
+    });
+  }
+}).render('#paypal-button-container');
+</script>
