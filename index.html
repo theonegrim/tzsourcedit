@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TZ Supplies</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0a0a0a;
+      color: white;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      background: black;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 15px;
+      text-decoration: none;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px;
+      background: #111;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product {
+      background: white;
+      color: black;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    button {
+      background: black;
+      color: white;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .cart {
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>TZ SUPPLIES</h2>
+  <nav>
+    <a href="#shop">Shop</a>
+    <a href="#cart">Cart</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1>Luxury Streetwear</h1>
+  <p>Black • White • Pink Collection</p>
+</div>
+
+<section id="shop" class="products"></section>
+
+<section id="cart" class="cart">
+  <h2>Your Cart</h2>
+  <div id="cart-items"></div>
+</section>
+
+<script>
+const products = [
+  { id: 1, name: "Nike Air Force 1", price: 120 },
+  { id: 2, name: "Jordan 4 Black Cat", price: 250 },
+  { id: 3, name: "Dior B23", price: 800 }
+];
+
+let cart = [];
+
+const shop = document.getElementById("shop");
+const cartItems = document.getElementById("cart-items");
+
+function renderProducts() {
+  shop.innerHTML = "";
+
+  products.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product";
+
+    div.innerHTML = `
+      <h3>${p.name}</h3>
+      <p>£${p.price}</p>
+      <button onclick="addToCart(${p.id})">Add to Cart</button>
+    `;
+
+    shop.appendChild(div);
+  });
+}
+
+function addToCart(id) {
+  const item = products.find(p => p.id === id);
+  cart.push(item);
+  renderCart();
+}
+
+function renderCart() {
+  cartItems.innerHTML = "";
+
+  cart.forEach((item, i) => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      ${item.name} - £${item.price}
+      <button onclick="removeItem(${i})">Remove</button>
+    `;
+    cartItems.appendChild(div);
+  });
+}
+
+function removeItem(i) {
+  cart.splice(i, 1);
+  renderCart();
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
