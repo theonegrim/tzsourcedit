@@ -1,1 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Products</title>
 
+  <style>
+    body {
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial;
+      margin: 0;
+      padding: 20px;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    button {
+      cursor: pointer;
+      background: white;
+      color: black;
+    }
+
+    .product {
+      background: #1a1a1a;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Product Manager</h1>
+
+<input id="name" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<button onclick="addProduct()">Add Product</button>
+
+<hr>
+
+<h2>Products List</h2>
+<div id="list"></div>
+
+<script type="module">
+import { auth, db } from "../js/firebase.js";
+import { onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import { 
+collection, addDoc, getDocs, deleteDoc, doc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+// 🔐 Protect page
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
+
+
+// ➕ Add product
+window.addProduct = async function () {
+  const name = document.getElementById("name").value;
+  const price = document.getElementById("price").value;
+
+  await addDoc(collection(db, "products"), {
+    name,
+    price
+  });
+
+  loadProducts();
+}
+
+
+// 📦 Load products
+async function loadProducts() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  const snap = await getDocs(collection(db, "products"));
+
+  snap.forEach((item) => {
+    const data = item.data();
+
+    list.innerHTML += `
+      <div class="product">
+        <p><b>${data.name}</b></p>
+        <p>£${data.price}</p>
+        <button onclick="deleteProduct('${item.id}')">Delete</button>
+      </div>
+    `;
+  });
+}
+
+
+// ❌ Delete product
+window.deleteProduct = async function (id) {
+  await deleteDoc(doc(db, "products", id));
+  loadProducts();
+}
+
+loadProducts();
+
+</script>
+
+</body>
+</html>
