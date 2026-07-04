@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard - TZ Supplies</title>
 
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f0f0f;
+      color: white;
+    }
+
+    .sidebar {
+      width: 220px;
+      height: 100vh;
+      background: #1a1a1a;
+      position: fixed;
+      padding: 20px;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    .sidebar a:hover {
+      background: #333;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 20px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .card {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .logout {
+      background: white;
+      color: black;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>TZ Admin</h2>
+
+  <a href="#">Dashboard</a>
+  <a href="products.html">Products</a>
+  <a href="orders.html">Orders</a>
+  <a href="customers.html">Customers</a>
+  <a href="discounts.html">Discounts</a>
+
+  <button class="logout" onclick="logout()">Logout</button>
+</div>
+
+<div class="main">
+  <h1>Dashboard</h1>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Products</h3>
+      <p id="productsCount">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Orders</h3>
+      <p id="ordersCount">0</p>
+    </div>
+
+    <div class="card">
+      <h3>Customers</h3>
+      <p id="customersCount">0</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { auth, db } from "../js/firebase.js";
+import { signOut, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import { collection, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+// 🔐 Protect page
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+  }
+});
+
+window.logout = async function () {
+  await signOut(auth);
+  window.location.href = "login.html";
+}
+
+
+// 📊 Load stats
+async function loadStats() {
+
+  const products = await getDocs(collection(db, "products"));
+  const orders = await getDocs(collection(db, "orders"));
+  const customers = await getDocs(collection(db, "customers"));
+
+  document.getElementById("productsCount").innerText = products.size;
+  document.getElementById("ordersCount").innerText = orders.size;
+  document.getElementById("customersCount").innerText = customers.size;
+}
+
+loadStats();
+
+</script>
+
+</body>
+</html>
