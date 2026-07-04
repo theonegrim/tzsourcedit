@@ -77,8 +77,12 @@
 <section id="cart" class="cart">
   <h2>Your Cart</h2>
   <div id="cart-items"></div>
-</section>
+</section><h2>Checkout</h2>
 
+<div id="paypal-button-container"></div>
+<h2>Checkout</h2>
+
+<div id="paypal-button-container"></div>
 <script>
 const products = [
   { id: 1, name: "Nike Air Force 1", price: 120 },
@@ -140,12 +144,6 @@ function removeItem(i) {
 
 renderProducts();
 </script>
-</body>
-</body>
-</html>
-<h2>Checkout</h2>
-<div id="paypal-button-container"></div>
-</body>
 <script src="https://www.paypal.com/sdk/js?client-id=AXkQarShtTZ74AO3BNVCfC7B1ksZQda-z8wlnB_tCE8a-e2pX_3lu29LQEZi2jNpKcSheLQgNJloTxwe&currency=GBP"></script>
 <script>
 function getTotal() {
@@ -173,3 +171,5 @@ paypal.Buttons({
   }
 }).render('#paypal-button-container');
 </script>
+</body>
+</html>
