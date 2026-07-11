@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TZ Supplies</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0a0a0a;
+      color: white;
+    }
+
+    <header>
+    <div class="logo">TZ SUPPLIES</div>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#shop">Shop</a>
+        <a href="#brands">Brands</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#contact">Contact</a>
+        <a href="#cart">🛒 Cart</a>
+    </nav>
+</header>
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+      background: black;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 15px;
+      text-decoration: none;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 60px;
+      background: #111;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .product {
+      background: white;
+      color: black;
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    button {
+      background: black;
+      color: white;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .cart {
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>TZ SUPPLIES</h2>
+  <nav>
+    <a href="#shop">Shop</a>
+    <a href="#cart">Cart</a>
+  </nav>
+</header>
+
+<div class="hero">
+
+    <h1>TZ SUPPLIES</h1>
+
+    <h2>Luxury Trainers & Streetwear</h2>
+
+    <p>
+        Premium trainers from Nike, Jordan, Dior, ASICS & New Balance.
+    </p>
+
+    <a href="#shop">
+        <button>SHOP NOW</button>
+    </a>
+
+</div>
+  <h1>Luxury Streetwear</h1>
+  <p>Black • White • Pink Collection</p>
+</div>
+
+<section id="shop" class="products"></section>
+
+<section id="cart" class="cart">
+  <h2>Your Cart</h2>
+  <div id="cart-items"></div>
+</section><h2>Checkout</h2>
+
+
+<h2>Checkout</h2>
+
+<div id="paypal-button-container"></div>
+<script>
+const products = [
+  { id: 1, name: "Nike Air Force 1", price: 120 },
+   { id: 1, name: "Nike Air Force 1", price: 120 },
+   { id: 1, name: "Nike Air Force 1", price: 120 },
+   { id: 1, name: "Nike Air Force 1", price: 120 },
+   { id: 1, name: "Nike Air Force 1", price: 120 },
+   { id: 1, name: "Nike Air Force 1", price: 120 },
+   { id: 1, name: "Nike Air Force 1", price: 120 },
+  { id: 2, name: "Jordan 4 Black Cat", price: 250 },
+  { id: 3, name: "Dior B23", price: 800 }
+];
+
+let cart = [];
+
+const shop = document.getElementById("shop");
+const cartItems = document.getElementById("cart-items");
+
+function renderProducts() {
+  shop.innerHTML = "";
+
+  products.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product";
+
+    div.innerHTML = `
+      <h3>${p.name}</h3>
+      <p>£${p.price}</p>
+      <button onclick="addToCart(${p.id})">Add to Cart</button>
+    `;
+
+    shop.appendChild(div);
+  });
+}
+
+function addToCart(id) {
+  const item = products.find(p => p.id === id);
+  cart.push(item);
+  renderCart();
+}
+
+function renderCart() {
+  cartItems.innerHTML = "";
+
+  cart.forEach((item, i) => {
+    const div = document.createElement("div");
+    div.innerHTML = `
+      ${item.name} - £${item.price}
+      <button onclick="removeItem(${i})">Remove</button>
+    `;
+    cartItems.appendChild(div);
+  });
+}
+
+function removeItem(i) {
+  cart.splice(i, 1);
+  renderCart();
+}
+
+renderProducts();
+</script>
+<script src="https://www.paypal.com/sdk/js?client-id=AXkQarShtTZ74AO3BNVCfC7B1ksZQda-z8wlnB_tCE8a-e2pX_3lu29LQEZi2jNpKcSheLQgNJloTxwe&currency=GBP"></script>
+<script>
+function getTotal() {
+  return cart.reduce((sum, item) => sum + item.price, 0);
+}
+
+paypal.Buttons({
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        amount: {
+          value: getTotal().toFixed(2)
+        }
+      }]
+    });
+  },
+
+  onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+      alert("Payment successful! " + details.payer.name.given_name);
+
+      cart = [];
+      renderCart();
+    });
+  }
+}).render('#paypal-button-container');
+</script>
+</body>
+</html>
